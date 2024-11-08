@@ -1,13 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import { useAuthStore } from "./stores/auth";
-import { onMounted } from "vue";
 
 const authStore = useAuthStore();
-
-onMounted(() => {
-	authStore.getUser();
-});
 </script>
 
 <template>
@@ -17,7 +12,7 @@ onMounted(() => {
 
 			<div v-if="authStore.user" class="flex items-center space-x-6">
 				<p class="text-sm text-white">Welcome Back {{ authStore.user.name }}</p>
-				<RouterLink :to="{ name: 'create' }" class="nav-link"
+				<RouterLink :to="{ name: 'categories-create' }" class="nav-link"
 					>Create New Category</RouterLink
 				>
 				<form @submit.prevent="authStore.logout">

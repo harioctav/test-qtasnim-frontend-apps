@@ -27,7 +27,7 @@ const router = createRouter({
 		},
 		{
 			path: "/categories/create",
-			name: "create",
+			name: "categories-create",
 			component: CreateView,
 			meta: { auth: true },
 		},
