@@ -3,7 +3,8 @@ import HomeView from "@/views/HomeView.vue";
 import RegisterView from "@/views/Auth/RegisterView.vue";
 import LoginView from "@/views/Auth/LoginView.vue";
 import { useAuthStore } from "@/stores/auth";
-import CreateView from "@/views/Categories/CreateView.vue";
+import IndexView from "@/views/Products/IndexView.vue";
+import CreateView from "@/views/Products/CreateView.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,8 +27,14 @@ const router = createRouter({
 			meta: { guest: true },
 		},
 		{
-			path: "/categories/create",
-			name: "categories-create",
+			path: "/products",
+			name: "products",
+			component: IndexView,
+			meta: { auth: true },
+		},
+		{
+			path: "/products/create",
+			name: "product-create",
 			component: CreateView,
 			meta: { auth: true },
 		},

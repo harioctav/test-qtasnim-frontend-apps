@@ -2,6 +2,8 @@
 
 <template>
 	<main>
-		<h1 class="title">Latest Categories</h1>
+		<h1 class="title">This Home Pages</h1>
+
+		<!--  -->
 	</main>
 </template>

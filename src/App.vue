@@ -12,8 +12,8 @@ const authStore = useAuthStore();
 
 			<div v-if="authStore.user" class="flex items-center space-x-6">
 				<p class="text-sm text-white">Welcome Back {{ authStore.user.name }}</p>
-				<RouterLink :to="{ name: 'categories-create' }" class="nav-link"
-					>Create New Category</RouterLink
+				<RouterLink :to="{ name: 'products' }" class="nav-link"
+					>Products</RouterLink
 				>
 				<form @submit.prevent="authStore.logout">
 					<button class="nav-link">Logout</button>
