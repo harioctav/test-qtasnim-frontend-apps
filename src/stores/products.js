@@ -20,20 +20,62 @@ export const useProductStore = defineStore("productStore", {
 			},
 			errors: {},
 			isLoading: false,
+			sortField: "created_at",
+			sortOrder: "desc",
+			searchTerm: "",
 		};
 	},
 	actions: {
-		// get All Products
 		async getAllProducts(page = 1) {
-			const response = await fetch(`/api/products?page=${page}`, {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
-			const data = await response.json();
-			this.products = data.products;
+			try {
+				this.isLoading = true;
+				const searchParams = new URLSearchParams({
+					page: page,
+					sort_field: this.sortField,
+					sort_order: this.sortOrder,
+				});
 
-			return this.products.data;
+				// Tambahkan search parameter jika ada
+				if (this.searchTerm) {
+					searchParams.append("search", this.searchTerm);
+				}
+
+				const response = await fetch(
+					`/api/products?${searchParams.toString()}`,
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem("token")}`,
+						},
+					}
+				);
+				const data = await response.json();
+				this.products = data.products;
+				return this.products.data;
+			} catch (error) {
+				console.error("Error fetching products:", error);
+				throw error;
+			} finally {
+				this.isLoading = false;
+			}
+		},
+
+		async updateSearch(term) {
+			this.searchTerm = term;
+			await this.getAllProducts(1); // Reset ke halaman pertama saat search
+		},
+
+		async updateSort(field) {
+			// Toggle sort order if same field is clicked
+			if (field === this.sortField) {
+				this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+			} else {
+				// New field, default to ascending
+				this.sortField = field;
+				this.sortOrder = "asc";
+			}
+
+			// Reload data with new sorting
+			await this.getAllProducts(this.products.current_page);
 		},
 
 		async getPage(page) {
