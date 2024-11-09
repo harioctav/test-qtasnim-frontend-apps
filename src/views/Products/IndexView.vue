@@ -8,7 +8,11 @@ const router = useRouter();
 const productsStore = useProductStore();
 
 onMounted(async () => {
-	await productsStore.getAllProducts();
+	try {
+		await productsStore.getAllProducts();
+	} catch (error) {
+		alert("Failed to load products: " + error.message);
+	}
 });
 
 const products = computed(() => productsStore.products.data);

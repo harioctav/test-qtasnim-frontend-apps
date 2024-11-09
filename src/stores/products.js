@@ -19,6 +19,7 @@ export const useProductStore = defineStore("productStore", {
 				total: 0,
 			},
 			errors: {},
+			isLoading: false,
 		};
 	},
 	actions: {
@@ -88,6 +89,33 @@ export const useProductStore = defineStore("productStore", {
 			} else {
 				this.router.push({ name: "products" });
 				this.errors = {};
+			}
+		},
+
+		// Delete Product
+		async deleteProduct(product) {
+			try {
+				this.isLoading = true;
+				const response = await fetch(`/api/products/${product.uuid}`, {
+					method: "delete",
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error("Failed to delete product");
+				}
+
+				// Refresh the products list after successful deletion
+				await this.getAllProducts(this.products.current_page);
+
+				return true;
+			} catch (error) {
+				console.error("Error deleting product:", error);
+				throw error;
+			} finally {
+				this.isLoading = false;
 			}
 		},
 	},
