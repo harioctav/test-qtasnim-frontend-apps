@@ -8,6 +8,11 @@ const router = useRouter();
 const productsStore = useProductStore();
 const searchInput = ref("");
 const searchTimeout = ref(null);
+const startDate = ref("");
+const endDate = ref("");
+
+// Get current date in YYYY-MM-DD format for max date
+const currentDate = new Date().toISOString().split("T")[0];
 
 onMounted(async () => {
 	try {
@@ -42,6 +47,33 @@ function handleSearch(event) {
 			alert("Search failed: " + error.message);
 		}
 	}, 300); // Delay 300ms
+}
+
+function clearSearch() {
+	searchInput.value = "";
+	productsStore.updateSearch("");
+}
+
+async function handleDateChange() {
+	if (startDate.value && endDate.value) {
+		if (startDate.value > endDate.value) {
+			alert("Start date cannot be later than end date");
+			return;
+		}
+
+		try {
+			await productsStore.updateDateRange(startDate.value, endDate.value);
+		} catch (error) {
+			alert("Failed to filter by date: " + error.message);
+		}
+	}
+}
+
+async function clearFilters() {
+	searchInput.value = "";
+	startDate.value = "";
+	endDate.value = "";
+	await productsStore.resetFilters();
 }
 
 async function handleSort(field) {
@@ -82,10 +114,10 @@ async function handleDelete(product) {
 			>
 		</div>
 
-		<!-- Search Section -->
-		<div class="mb-6">
+		<div class="mb-6 space-y-4">
+			<!-- Search input -->
 			<div class="flex items-center space-x-4">
-				<div class="flex-1">
+				<div class="flex-1 relative">
 					<input
 						type="text"
 						v-model="searchInput"
@@ -93,11 +125,58 @@ async function handleDelete(product) {
 						placeholder="Search by name or stock..."
 						class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 					/>
+					<button
+						v-if="searchInput"
+						@click="clearSearch"
+						class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+					>
+						✕
+					</button>
+				</div>
+			</div>
+
+			<!-- Date Range Filter -->
+			<div class="flex items-center space-x-4">
+				<div class="flex-1 grid grid-cols-2 gap-4">
+					<div>
+						<label class="block text-sm font-medium text-gray-700 mb-1">
+							Start Date
+						</label>
+						<input
+							type="date"
+							v-model="startDate"
+							:max="currentDate"
+							@change="handleDateChange"
+							class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+					</div>
+					<div>
+						<label class="block text-sm font-medium text-gray-700 mb-1">
+							End Date
+						</label>
+						<input
+							type="date"
+							v-model="endDate"
+							:min="startDate"
+							:max="currentDate"
+							@change="handleDateChange"
+							class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+					</div>
 				</div>
 
-				<!-- Loading indicator -->
-				<div v-if="isLoading" class="text-gray-500">Searching...</div>
+				<!-- Clear Filters Button -->
+				<button
+					@click="clearFilters"
+					class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+					:disabled="isLoading"
+				>
+					Clear Filters
+				</button>
 			</div>
+
+			<!-- Loading indicator -->
+			<div v-if="isLoading" class="text-center text-gray-500">Loading...</div>
 		</div>
 
 		<!-- No results message -->
@@ -218,5 +297,14 @@ th[class*="cursor-pointer"] {
 
 .animate-pulse {
 	animation: pulse 1.5s ease-in-out infinite;
+}
+
+input[type="date"] {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+	cursor: pointer;
 }
 </style>

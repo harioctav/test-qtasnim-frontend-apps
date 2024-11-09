@@ -23,6 +23,10 @@ export const useProductStore = defineStore("productStore", {
 			sortField: "created_at",
 			sortOrder: "desc",
 			searchTerm: "",
+			dateRange: {
+				startDate: "",
+				endDate: "",
+			},
 		};
 	},
 	actions: {
@@ -35,9 +39,15 @@ export const useProductStore = defineStore("productStore", {
 					sort_order: this.sortOrder,
 				});
 
-				// Tambahkan search parameter jika ada
 				if (this.searchTerm) {
 					searchParams.append("search", this.searchTerm);
+				}
+
+				if (this.dateRange.startDate) {
+					searchParams.append("start_date", this.dateRange.startDate);
+				}
+				if (this.dateRange.endDate) {
+					searchParams.append("end_date", this.dateRange.endDate);
 				}
 
 				const response = await fetch(
@@ -57,6 +67,22 @@ export const useProductStore = defineStore("productStore", {
 			} finally {
 				this.isLoading = false;
 			}
+		},
+
+		async updateDateRange(startDate, endDate) {
+			this.dateRange.startDate = startDate;
+			this.dateRange.endDate = endDate;
+			await this.getAllProducts(1); // Reset ke halaman pertama
+		},
+
+		// Reset semua filter
+		async resetFilters() {
+			this.searchTerm = "";
+			this.dateRange.startDate = "";
+			this.dateRange.endDate = "";
+			this.sortField = "created_at";
+			this.sortOrder = "desc";
+			await this.getAllProducts(1);
 		},
 
 		async updateSearch(term) {
