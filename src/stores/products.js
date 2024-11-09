@@ -39,10 +39,42 @@ export const useProductStore = defineStore("productStore", {
 			await this.getAllProducts(page);
 		},
 
+		// Get a Product
+		async getProduct(product) {
+			const response = await fetch(`/api/products/${product}`, {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			});
+			const data = await response.json();
+
+			return data.product;
+		},
+
 		// Create Product
 		async createProduct(formData) {
 			const response = await fetch("/api/products", {
 				method: "post",
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(formData),
+			});
+
+			const data = await response.json();
+
+			if (data.errors) {
+				this.errors = data.errors;
+			} else {
+				this.router.push({ name: "products" });
+				this.errors = {};
+			}
+		},
+
+		// Update Product
+		async updateProduct(product, formData) {
+			const response = await fetch(`/api/products/${product.uuid}`, {
+				method: "put",
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
