@@ -26,6 +26,18 @@ async function handleEdit(productId) {
 	// Navigate to edit page
 	router.push({ name: "product-edit", params: { uuid: productId } });
 }
+
+async function handleDelete(product) {
+	if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
+		try {
+			await productsStore.deleteProduct(product);
+			// Optional: tampilkan notifikasi sukses
+			alert("Product deleted successfully");
+		} catch (error) {
+			alert("Failed to delete product: " + error.message);
+		}
+	}
+}
 </script>
 
 <template>
@@ -33,7 +45,9 @@ async function handleEdit(productId) {
 		<div class="flex items-center justify-between">
 			<h1 class="title">Latest Product</h1>
 
-			<RouterLink :to="{ name: 'product-create' }"
+			<RouterLink
+				:to="{ name: 'product-create' }"
+				class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-colors text-sm"
 				>Create New Product</RouterLink
 			>
 		</div>
@@ -92,6 +106,13 @@ async function handleEdit(productId) {
 									class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-colors text-sm"
 								>
 									Edit
+								</button>
+								<button
+									@click="handleDelete(product)"
+									class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors text-sm"
+									:disabled="productsStore.isLoading"
+								>
+									{{ productsStore.isLoading ? "Deleting..." : "Delete" }}
 								</button>
 							</div>
 						</td>
