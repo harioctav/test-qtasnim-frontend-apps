@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/auth";
 import IndexView from "@/views/Products/IndexView.vue";
 import CreateView from "@/views/Products/CreateView.vue";
 import EditView from "@/views/Products/EditView.vue";
+import SalesView from "@/views/Sales/IndexView.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,12 @@ const router = createRouter({
 			path: "/products/:uuid/edit",
 			name: "product-edit",
 			component: EditView,
+			meta: { auth: true },
+		},
+		{
+			path: "/sales",
+			name: "sales",
+			component: SalesView,
 			meta: { auth: true },
 		},
 	],

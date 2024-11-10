@@ -15,6 +15,7 @@ const authStore = useAuthStore();
 				<RouterLink :to="{ name: 'products' }" class="nav-link"
 					>Products</RouterLink
 				>
+				<RouterLink :to="{ name: 'sales' }" class="nav-link">Sales</RouterLink>
 				<form @submit.prevent="authStore.logout">
 					<button class="nav-link">Logout</button>
 				</form>
