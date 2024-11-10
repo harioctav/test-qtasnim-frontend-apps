@@ -1,7 +1,7 @@
 <script setup>
 import Pagination from "@/components/Pagination.vue";
 import { useProductStore } from "@/stores/products";
-import { computed, onMounted, ref } from "vue";
+import { computed, getCurrentInstance, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -10,6 +10,9 @@ const searchInput = ref("");
 const searchTimeout = ref(null);
 const startDate = ref("");
 const endDate = ref("");
+
+const app = getCurrentInstance();
+const formatter = app.proxy.$dateFormatter;
 
 // Get current date in YYYY-MM-DD format for max date
 const currentDate = new Date().toISOString().split("T")[0];
@@ -238,7 +241,7 @@ async function handleDelete(product) {
 							{{ product.number_of_sales }}
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
-							{{ product.transaction_date }}
+							{{ $dateFormatter.toIndonesian(product.transaction_date) }}
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">{{ product.type }}</td>
 						<td class="px-6 py-4 whitespace-nowrap">

@@ -5,6 +5,7 @@ import { createPinia } from "pinia";
 
 import App from "./App.vue";
 import router from "./router";
+import dateFormatter from "./plugins/dateFormatter";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -15,5 +16,6 @@ pinia.use(({ store }) => {
 
 app.use(pinia);
 app.use(router);
+app.use(dateFormatter);
 
 app.mount("#app");
