@@ -11,9 +11,6 @@ const searchTimeout = ref(null);
 const startDate = ref("");
 const endDate = ref("");
 
-const app = getCurrentInstance();
-const formatter = app.proxy.$dateFormatter;
-
 // Get current date in YYYY-MM-DD format for max date
 const currentDate = new Date().toISOString().split("T")[0];
 
@@ -131,7 +128,7 @@ async function handleDelete(product) {
 					<button
 						v-if="searchInput"
 						@click="clearSearch"
-						class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+						class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 mr-3"
 					>
 						✕
 					</button>
@@ -171,7 +168,7 @@ async function handleDelete(product) {
 				<!-- Clear Filters Button -->
 				<button
 					@click="clearFilters"
-					class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+					class="px-4 py-2 mt-5 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
 					:disabled="isLoading"
 				>
 					Clear Filters
